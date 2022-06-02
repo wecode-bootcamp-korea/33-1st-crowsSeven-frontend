@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Nav from '../../components/Nav/Nav';
 import { AiOutlineArrowUp, AiOutlineArrowDown } from 'react-icons/ai';
 import TextItem from '../../components/reviews/TextItem';
@@ -18,9 +18,10 @@ const PRODUCT_INFO = [
 
 const Post = () => {
   const [postList, setPostList] = useState([]);
+  const params = useParams();
 
   useEffect(() => {
-    fetch('/data/relatedProductData.json')
+    fetch(`/data/relatedProductData.json/${params.id}`)
       .then(res => res.json())
       .then(productData => setPostList(productData));
   }, []);

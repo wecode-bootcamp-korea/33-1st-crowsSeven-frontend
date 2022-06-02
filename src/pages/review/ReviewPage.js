@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Nav from '../../components/Nav/Nav';
 import TextItem from '../../components/reviews/TextItem';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import './ReviewPage.scss';
 
@@ -21,17 +21,21 @@ const ReviewPage = () => {
     });
   };
   const transferBack = () => {};
+  const location = useLocation();
 
   useEffect(() => {
-    fetch('/data/relatedProductData.json')
+    fetch('http://10.58.0.159:8000/whole')
+      // 백 api
       .then(res => res.json())
       .then(productData => setTextList(productData));
-  }, []);
+  }, [location.pathname]);
 
   const navigate = useNavigate();
   const goToReviewForm = () => {
     navigate('/review_form');
   };
+
+  const token = localStorage.getItem('access_token');
 
   return (
     <>
@@ -122,9 +126,11 @@ const ReviewPage = () => {
                 찾기
               </button>
             </fieldset>
-            <button className="reviewWrite" onClick={goToReviewForm}>
-              글쓰기
-            </button>
+            {token && (
+              <button className="reviewWrite" onClick={goToReviewForm}>
+                글쓰기
+              </button>
+            )}
           </article>
         </section>
       </div>

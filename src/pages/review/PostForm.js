@@ -9,14 +9,6 @@ const PostForm = () => {
     navigate('/review_page');
   };
 
-  const POST_WRITE = [
-    {
-      reviewSubject: '',
-      reviewText: '',
-      password: '',
-    },
-  ];
-
   const [makeListTransfer, setMakeListTransfer] = useState({
     subject: '',
     option: '',
@@ -24,7 +16,38 @@ const PostForm = () => {
     password: '',
   });
 
-  console.log(makeListTransfer);
+  const [option, setOption] = useState('');
+
+  // id
+  // name
+
+  const postComment = () => {
+    fetch('http://10.58.0.159:8000/products/', {
+      method: 'POST',
+      headers: {
+        Authorization:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MX0.Xq23aHvqQlqnQtXkwVbGPaJQmKHPJHiD5QxERAx1kCU',
+      },
+      body: JSON.stringify(makeListTransfer),
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res.message === 'success') {
+          navigate('/review_page');
+        } else {
+          alert('잘못된 요청입니다');
+        }
+      });
+  };
+  // http://10.58.0.159:8000/users/purchaseproduct
+
+  useEffect(() => {
+    fetch('/data/optiondata.json')
+      .then(res => res.json())
+      .then(res => {
+        setOption(res);
+      });
+  }, []);
 
   const postTransfer = e => {
     setMakeListTransfer({
@@ -32,7 +55,6 @@ const PostForm = () => {
       [e.target.name]: e.target.value,
     });
   };
-
   return (
     <div className="postForm">
       <header className="slideRight">
@@ -51,6 +73,13 @@ const PostForm = () => {
                   onChange={postTransfer}
                 >
                   <option>제품 선택</option>
+                  {option.map(a => {
+                    return (
+                      <>
+                        <option key={a.id}>{a.name}</option>
+                      </>
+                    );
+                  })}
                 </select>
               </td>
             </tr>
@@ -58,7 +87,7 @@ const PostForm = () => {
           <tbody>
             <tr>
               <td className="textArea" colSpan="2">
-                <textarea name="content" onChange={postTransfer}></textarea>
+                <textarea name="content" onChange={postTransfer} />
               </td>
             </tr>
             <tr>
@@ -80,7 +109,9 @@ const PostForm = () => {
             </button>
           </div>
           <div>
-            <button className="createBtn">등록</button>
+            <button className="createBtn" onClick={postComment}>
+              등록
+            </button>
             <button className="cancleBtn" onClick={goToReviewList}>
               취소
             </button>

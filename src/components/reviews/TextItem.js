@@ -1,10 +1,15 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const TextItem = ({ postItem, isImgShow }) => {
   const { id, number, img, product, subject, author, date, hit } = postItem;
 
+  const navigate = useNavigate();
+  const goToPostPage = () => {
+    navigate(`/review_post/${id}`);
+  };
   return (
-    <tr key={id}>
+    <tr key={id} onClick={goToPostPage}>
       <td className="marginRight">{number} </td>
 
       <td className="productName tableLeft">
