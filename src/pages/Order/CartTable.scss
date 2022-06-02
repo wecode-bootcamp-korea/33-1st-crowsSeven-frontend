@@ -43,6 +43,11 @@
 .cartItem {
   .product {
     width: 12.5rem;
+
+    img {
+      width: 5rem;
+      height: 5rem;
+    }
   }
 
   .info {

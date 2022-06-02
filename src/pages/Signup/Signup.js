@@ -2,8 +2,10 @@ import './Signup.scss';
 import Agreement from './Agreement';
 import AGREE_LIST from './agreeData';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+  const navigate = useNavigate;
   const [checkedList, setCheckedLists] = useState([]);
   const [inputValue, setInputValue] = useState({
     id: '',
@@ -46,7 +48,7 @@ const Signup = () => {
   };
 
   const goToMain = () => {
-    fetch('http://10.58.6.28:8000/users/signup', {
+    fetch('http://10.58.1.252:8000/users/signup', {
       method: 'POST',
       body: JSON.stringify({
         username: id,
@@ -58,7 +60,14 @@ const Signup = () => {
         phone_number: '010' + phone,
         optional_agreement: checked,
       }),
-    }).then(response => response.json());
+    }).then(response => {
+      if (response.ok) {
+        response.json();
+        navigate('../');
+      } else {
+        alert('입력창을 확인해주세요');
+      }
+    });
   };
 
   useEffect(() => {
@@ -302,7 +311,7 @@ const Signup = () => {
           className="signupBtn"
           disabled={
             !(
-              id.length > 5 &&
+              id.length > 3 &&
               pw2.length > 3 &&
               name.length > 1 &&
               address.length > 1 &&

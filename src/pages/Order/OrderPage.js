@@ -7,12 +7,22 @@ import './OrderPage.scss';
 const OrderPage = () => {
   const [orderItemList, setOrderItem] = useState([]);
 
-  useEffect(() => {
-    fetch('/data/cartListData.json')
+  const fetchCartList = () => {
+    fetch('http://10.58.1.252:8000/carts/', {
+      method: 'GET',
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
+    })
       .then(res => res.json())
-      .then(data => {
-        setOrderItem(data);
-      });
+      .then(res => {
+        setOrderItem(res.results);
+      })
+      .catch(e => {});
+  };
+
+  useEffect(() => {
+    fetchCartList();
   }, []);
 
   const price = orderItemList
@@ -25,7 +35,11 @@ const OrderPage = () => {
     <div className="orderPage">
       <h1>주문서작성</h1>
       <CartTable orderItemList={orderItemList} />
-      <Orderinfo total={total} />
+      <Orderinfo
+        shipping={shipping}
+        total={total}
+        orderItemList={orderItemList}
+      />
     </div>
   );
 };

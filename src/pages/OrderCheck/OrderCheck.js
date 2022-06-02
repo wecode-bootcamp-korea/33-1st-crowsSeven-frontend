@@ -19,13 +19,17 @@ const OrderCheck = () => {
   const orderEmpty = orderList.length === 0;
 
   useEffect(() => {
-    fetch('/data/cartList.JSON')
+    fetch('/data/cartListData.json', {
+      method: 'GET',
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
+    })
       .then(res => res.json())
       .then(data => {
         setOrderList(data);
       });
   }, []);
-
   const oneWeek = e => {
     let threeM = new Date(today.setDate(today.getDate() - 7));
     let year = threeM.getFullYear();
@@ -54,7 +58,9 @@ const OrderCheck = () => {
         <div className="line1" />
         <div className="line2" />
         <div className="checkBtnBox">
-          <div className="checkBtn1">주문내역조회({orderList.length})</div>
+          <div className="checkBtn1">
+            주문내역조회({orderList && orderList.length})
+          </div>
           <div className="checkBtn2" onClick={goToDeleteOrder}>
             취소/반품/교환내역(0)
           </div>

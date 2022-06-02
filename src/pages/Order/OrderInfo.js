@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Ordermodal from '../../components/OrderModal/OrderModal';
+
 import './OrderInfo.scss';
 
 const CreditCard = () => {
@@ -50,13 +52,19 @@ const Deposit = () => {
   );
 };
 
-const OrderInfo = ({ total }) => {
+const OrderInfo = ({ orderItemList, shipping, total }) => {
+  const [orderResult, setOrderResult] = useState([]);
+
   const [inputValue, setInputValue] = useState({
-    name: '',
+    selected_product_ids: '',
+    recipient: '',
     zipcode: '',
-    address: '',
-    number: '',
-    email: '',
+    delivery_address: '',
+    receive_phonenumber: '',
+    delivery_email: '',
+    delivery_message: '',
+    shopping_fee: '',
+    paymentmethod: '',
   });
 
   const [payment, setPayment] = useState();
@@ -70,15 +78,38 @@ const OrderInfo = ({ total }) => {
     e.preventDefault();
 
     const isValid =
-      inputValue.name &&
+      inputValue.recipient &&
       inputValue.zipcode &&
-      inputValue.address &&
-      inputValue.number &&
-      inputValue.email &&
+      inputValue.delivery_address &&
+      inputValue.receive_phonenumber &&
+      inputValue.delivery_email &&
       payment;
 
+    const orderItemIds = orderItemList.map(orderItem => orderItem.id);
+
     if (isValid) {
-      //결제 POST 요청
+      fetch('http://10.58.1.252:8000/orders/', {
+        method: 'POST',
+        headers: {
+          Authorization: localStorage.getItem('Authorization'),
+        },
+        body: JSON.stringify({
+          ...inputValue,
+          paymentmethod: Number(payment),
+          shopping_fee: Number(shipping),
+          selected_product_ids: orderItemIds,
+        }),
+      })
+        .then(res => {
+          if (res.status === 200) {
+            return res.json();
+          } else if (res.status === 400) {
+            alert('주문할 상품이 없습니다.');
+          } else {
+            alert('주문을 실패했습니다. 다시 요청해주세요');
+          }
+        })
+        .then(res => setOrderResult(res));
     } else {
       window.alert('주문서를 작성해 주세요.');
     }
@@ -112,7 +143,7 @@ const OrderInfo = ({ total }) => {
         <div className="addressInputBox">
           <div className="row">
             <div className="title">받으시는 분</div>
-            <input type="text" onChange={handleInput} name="name" />
+            <input type="text" onChange={handleInput} name="recipient" />
           </div>
 
           <div className="row">
@@ -123,7 +154,11 @@ const OrderInfo = ({ total }) => {
                 <span>우편주소</span>
               </div>
               <div>
-                <input type="text" onChange={handleInput} name="address" />
+                <input
+                  type="text"
+                  onChange={handleInput}
+                  name="delivery_address"
+                />
                 <span>기본주소</span>
               </div>
               <div>
@@ -135,13 +170,21 @@ const OrderInfo = ({ total }) => {
 
           <div className="row">
             <div className="title">휴대전화</div>
-            <input type="text" onChange={handleInput} name="number" />
+            <input
+              type="text"
+              onChange={handleInput}
+              name="receive_phonenumber"
+            />
           </div>
 
           <div className="row">
             <div className="title">이메일</div>
             <div>
-              <input type="email" onChange={handleInput} name="email" />
+              <input
+                type="email"
+                onChange={handleInput}
+                name="delivery_email"
+              />
               <div className="emailText">
                 <p>
                   이메일을 통해 주문처리과정을 보내드립니다. <br /> 이메일
@@ -153,7 +196,11 @@ const OrderInfo = ({ total }) => {
 
           <div className="row">
             <div className="title">배송메세지</div>
-            <textarea type="text" onChange={handleInput} />
+            <textarea
+              type="text"
+              onChange={handleInput}
+              name="delivery_message"
+            />
           </div>
         </div>
 
@@ -189,9 +236,12 @@ const OrderInfo = ({ total }) => {
           {payment === '2' && <AccountTransfer />}
           {payment === '3' && <Deposit />}
 
-          <div className="footer">
-            <p>Total {total}원</p>
+          <div className="orderFooter">
+            <p>
+              Total <span>{total}</span>원
+            </p>
             <button
+              className="paymentBtn"
               onClick={e => {
                 onSubmit(e);
               }}
@@ -201,6 +251,7 @@ const OrderInfo = ({ total }) => {
           </div>
         </div>
       </form>
+      {orderResult.length > 0 && <Ordermodal orderResult={orderResult} />}
     </div>
   );
 };

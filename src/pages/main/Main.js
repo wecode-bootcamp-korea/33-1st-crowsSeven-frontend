@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { HashLink } from 'react-router-hash-link';
 import Footer from './Footer';
 import SectionImg from './SectionImg';
 import MainButton from './MainButton';
@@ -75,9 +76,9 @@ const Main = () => {
       </section>
       <div className="rightContainerDots">
         {RIGHT_DOTS.map(({ id, text }) => (
-          <a className="rightDots" key={id} href={text}>
+          <HashLink className="rightDots" key={id} to={text}>
             {' '}
-          </a>
+          </HashLink>
         ))}
       </div>
       <section id="second" className="mainSection">

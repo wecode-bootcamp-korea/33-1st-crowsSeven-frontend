@@ -11,7 +11,7 @@ const LINK_LIST = [
     title: 'BOARD',
     description1: '고객님께서 작성하신 게시물을',
     description2: '관리하는 공간입니다.',
-    link: '../board',
+    link: '../review_page',
   },
   {
     icon: 'https://icon-library.com/images/my-profile-icon-png/my-profile-icon-png-3.jpg',

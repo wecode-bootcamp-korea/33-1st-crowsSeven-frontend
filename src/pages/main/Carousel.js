@@ -25,7 +25,11 @@ const Carousel = () => {
       </div>
       <div className="buttonContainer">
         {Array.from({ length: 4 }).map((_, index) => (
-          <button key={index} onClick={() => handleSlideButtonClick(index)} />
+          <button
+            className={`${currentSlide === index ? 'active' : ''}`}
+            key={index}
+            onClick={() => handleSlideButtonClick(index)}
+          />
         ))}
       </div>
     </section>

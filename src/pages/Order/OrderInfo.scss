@@ -70,10 +70,27 @@
     display: flex;
   }
 
+  .orderFooter {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    font-size: 15px;
+
+    p {
+      span {
+        font-weight: 600;
+      }
+    }
+
+    button {
+      font-size: 15px;
+      font-weight: 600;
+    }
+  }
+
   .radiobox {
     display: flex;
     align-items: center;
-    // background-color: burlywood;
 
     input {
       margin: 0;

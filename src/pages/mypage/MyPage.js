@@ -13,6 +13,9 @@ const MyPage = () => {
   useEffect(() => {
     fetch('http://localhost:3000/data/mypageData.json', {
       method: 'GET',
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
     })
       .then(res => res.json())
       .then(data => {

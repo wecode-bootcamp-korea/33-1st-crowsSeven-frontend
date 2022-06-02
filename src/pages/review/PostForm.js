@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './PostForm.scss';
@@ -9,22 +9,12 @@ const PostForm = () => {
     navigate('/review_page');
   };
 
-  const POST_WRITE = [
-    {
-      reviewSubject: '',
-      reviewText: '',
-      password: '',
-    },
-  ];
-
   const [makeListTransfer, setMakeListTransfer] = useState({
     subject: '',
     option: '',
     content: '',
     password: '',
   });
-
-  console.log(makeListTransfer);
 
   const postTransfer = e => {
     setMakeListTransfer({
@@ -58,7 +48,7 @@ const PostForm = () => {
           <tbody>
             <tr>
               <td className="textArea" colSpan="2">
-                <textarea name="content" onChange={postTransfer}></textarea>
+                <textarea name="content" onChange={postTransfer} />
               </td>
             </tr>
             <tr>

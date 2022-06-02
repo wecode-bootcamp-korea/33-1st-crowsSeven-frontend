@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CartItem from './CartItem';
 
 const TABLE_HEADER = [
@@ -17,6 +18,7 @@ const CartNotEmpty = ({
   setCartList,
   checkedList,
   setCheckedList,
+  fetchCartList,
 }) => {
   const [isAllChecked, setIsAllChecked] = useState(false);
 
@@ -45,6 +47,33 @@ const CartNotEmpty = ({
       setIsAllChecked(false);
     }
   };
+
+  const navigate = useNavigate();
+
+  const onSelectDelete = () => {
+    const checkedIds = checkedList.map(checkedItem => checkedItem.id);
+
+    fetch(`http://10.58.1.252:8000/carts/${checkedIds}`, {
+      method: 'DELETE',
+    })
+      .then(res => {
+        if (res.status === 200) {
+          fetchCartList();
+        }
+      })
+      .catch(e => {
+        alert('다시 시도해주세요.');
+      });
+  };
+
+  const goToSelectOrder = () => {};
+
+  const onDelete = () => {};
+
+  const goToOrder = () => {
+    navigate('/order');
+  };
+
   return (
     <>
       <table>
@@ -65,19 +94,20 @@ const CartNotEmpty = ({
           </tr>
         </thead>
         <tbody>
-          {cartList.map(item => {
-            return (
-              <CartItem
-                key={cartList.id}
-                item={item}
-                total={total}
-                cartList={cartList}
-                setCartList={setCartList}
-                checkedList={checkedList}
-                setCheckedList={setCheckedList}
-              />
-            );
-          })}
+          {cartList &&
+            cartList.map(item => {
+              return (
+                <CartItem
+                  key={cartList.id}
+                  item={item}
+                  total={total}
+                  cartList={cartList && cartList}
+                  setCartList={setCartList}
+                  checkedList={checkedList}
+                  setCheckedList={setCheckedList}
+                />
+              );
+            })}
         </tbody>
         <tfoot>
           {tableFooter.map(row => {
@@ -98,12 +128,12 @@ const CartNotEmpty = ({
       </table>
       <div className="bottomBtn">
         <div className="deleteBtn">
-          <button>Select Delete</button>
-          <button>Delete</button>
+          <button onClick={onSelectDelete}>Select Delete</button>
+          <button onClick={onDelete}>Delete</button>
         </div>
         <div className="orderBtn">
-          <button>Select Order</button>
-          <button>Order</button>
+          <button onClick={goToSelectOrder}>Select Order</button>
+          <button onClick={goToOrder}>Order</button>
         </div>
       </div>
     </>
