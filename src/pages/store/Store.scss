@@ -206,6 +206,7 @@
     @include flexColumn;
     position: relative;
     animation: fadeIn 1s;
+    height: 25rem;
 
     .itemTag {
       @include flexCenter;
