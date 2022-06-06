@@ -6,38 +6,37 @@ import { useState } from 'react';
 import './StoreModal.scss';
 
 const StoreModal = ({ items, closeModal }) => {
-  const [amount, setAmount] = useState(1);
-  const { img, itemName, price } = items;
+  const [count, setCount] = useState(1);
+  const { id, img, itemName, price, option_product_id } = items;
 
-  const currentAmount = e => {
-    const amount = e.target;
-    setAmount(amount);
+  const currentCount = e => {
+    const count = e.target;
+    setCount(count);
   };
 
-  const increaseAmount = () => {
-    setAmount(amount + 1);
+  const increaseCount = () => {
+    setCount(count + 1);
   };
 
-  const decreaseAmount = () => {
-    setAmount(amount - 1);
-    if (amount <= 1) {
+  const decreaseCount = () => {
+    setCount(count - 1);
+    if (count <= 1) {
       alert('주문 수량은 1 이상이어야 합니다.');
-      setAmount(1);
+      setCount(1);
     }
   };
 
   const navigate = useNavigate();
 
   const goToCart = () => {
-    fetch(`http://10.58.1.252:8000/carts/`, {
+    fetch(`http://10.58.2.129:8000/carts/`, {
       method: 'POST',
       headers: {
-        Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTB9.i1C1V7Mue-i8VfcUp-ZO-kzEDgLOxX7xzQK7WLadk7U',
+        Authorization: localStorage.getItem('Authorization'),
       },
       body: JSON.stringify({
-        option_product_id: Number(items.id),
-        count: Number(amount),
+        option_product_id: Number(option_product_id),
+        count: Number(count),
       }),
     })
       .then(res => res.json())
@@ -49,11 +48,15 @@ const StoreModal = ({ items, closeModal }) => {
   };
 
   const priceToString = Number(price).toLocaleString('ko-KR');
-  const calculateTotalPrice = price * amount;
+  const calculateTotalPrice = price * count;
   const totalPriceToString = calculateTotalPrice.toLocaleString('ko-KR');
 
   const handleWishList = () => {
     alert('로그인 후 관심상품 등록을 해주세요.');
+  };
+
+  const goToDetail = () => {
+    navigate(`/productDetail/${id}`);
   };
 
   return (
@@ -104,16 +107,16 @@ const StoreModal = ({ items, closeModal }) => {
             <div className="inputAmount">
               <div
                 className="amountInput"
-                onChange={currentAmount}
+                onChange={currentCount}
                 type="number"
               >
-                <span>{amount}</span>
+                <span>{count}</span>
               </div>
               <div className="amountHandler">
-                <button onClick={increaseAmount} className="up">
+                <button onClick={increaseCount} className="up">
                   <IoMdArrowDropup className="arrow" />
                 </button>
-                <button onClick={decreaseAmount} className="down">
+                <button onClick={decreaseCount} className="down">
                   <IoMdArrowDropdown className="arrow" />
                 </button>
               </div>
@@ -122,11 +125,12 @@ const StoreModal = ({ items, closeModal }) => {
           </div>
           <hr />
           <div className="totalPrice">
-            총 상품금액({amount}) :<span> ￦{totalPriceToString} </span>(
-            {amount}개)
+            총 상품금액 :<span> ￦{totalPriceToString} </span>({count}개)
           </div>
           <div className="totalBuyBtn">
-            <button className="buyBtn">BUY NOW</button>
+            <button onClick={goToDetail} className="buyBtn">
+              BUY NOW
+            </button>
             <button onClick={goToCart} className="cartBtn">
               CART
             </button>

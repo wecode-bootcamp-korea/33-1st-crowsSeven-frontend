@@ -11,7 +11,7 @@ import './ProductDetail.scss';
 
 const ProductDetail = () => {
   const [items, setItems] = useState([]);
-  const [amount, setAmount] = useState(1);
+  const [count, setCount] = useState(1);
   const [reviewDrawer, setReviewDrawer] = useState(false);
   const [QnADrawer, setQnADrawer] = useState(false);
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const ProductDetail = () => {
     items;
 
   useEffect(() => {
-    fetch(`http://10.58.2.129:8000/products/${params.id}`, {
+    fetch(`http://54.174.216.108:8000/products/${params.id}`, {
       method: 'GET',
     })
       .then(res => res.json())
@@ -28,15 +28,14 @@ const ProductDetail = () => {
   }, [params.id]);
 
   const goToCart = () => {
-    fetch(`http://10.58.1.252:8000/carts/`, {
+    fetch(`http://54.174.216.108:8000/carts/`, {
       method: 'POST',
       headers: {
-        Authorization:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTB9.i1C1V7Mue-i8VfcUp-ZO-kzEDgLOxX7xzQK7WLadk7U',
+        Authorization: localStorage.getItem('Authorization'),
       },
       body: JSON.stringify({
         option_product_id: Number(option_product_id),
-        count: Number(amount),
+        count: Number(count),
       }),
     })
       .then(res => res.json())
@@ -47,25 +46,25 @@ const ProductDetail = () => {
       });
   };
 
-  const currentAmount = e => {
-    const amount = e.target;
-    setAmount(amount);
+  const currentCount = e => {
+    const count = e.target;
+    setCount(count);
   };
 
-  const increaseAmount = () => {
-    setAmount(amount + 1);
+  const increaseCount = () => {
+    setCount(count + 1);
   };
 
-  const decreaseAmount = () => {
-    setAmount(amount - 1);
-    if (amount <= 1) {
+  const decreaseCount = () => {
+    setCount(count - 1);
+    if (count <= 1) {
       alert('주문 수량은 1 이상이어야 합니다.');
-      setAmount(1);
+      setCount(1);
     }
   };
 
   const priceToString = Number(price).toLocaleString('ko-KR');
-  const calculateTotalPrice = price * amount;
+  const calculateTotalPrice = price * count;
   const totalPriceToString = calculateTotalPrice.toLocaleString('ko-KR');
 
   const handleWishList = () => {
@@ -100,23 +99,23 @@ const ProductDetail = () => {
                 <div className="inputAmount">
                   <div
                     className="amountInput"
-                    onChange={currentAmount}
+                    onChange={currentCount}
                     type="number"
                   >
-                    <span>{amount}</span>
+                    <span>{count}</span>
                   </div>
                   <div className="amountHandler">
-                    <button onClick={increaseAmount} className="up">
+                    <button onClick={increaseCount} className="up">
                       <IoMdArrowDropup className="arrow" />
                     </button>
-                    <button onClick={decreaseAmount} className="down">
+                    <button onClick={decreaseCount} className="down">
                       <IoMdArrowDropdown className="arrow" />
                     </button>
                   </div>
                 </div>
               </div>
               <div className="totalPrice">
-                TOTAL :<span> ￦{totalPriceToString} </span>({amount}개)
+                TOTAL :<span> ￦{totalPriceToString} </span>({count}개)
               </div>
               <div className="totalBuyBtn">
                 <button className="buyBtn">구매하기</button>

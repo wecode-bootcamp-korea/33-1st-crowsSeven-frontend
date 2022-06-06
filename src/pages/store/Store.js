@@ -15,9 +15,15 @@ const Store = () => {
   const [totalCounts, setTotalCounts] = useState();
   const navigate = useNavigate();
   const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const urlCategory = params.get('category');
+  const urlMaterial = params.get('material');
+  const urlOffset = params.get('offset');
+  const categoryString = `category=${urlCategory}`;
+  const materialString = `material=${urlMaterial}`;
 
   useEffect(() => {
-    fetch(`http://10.58.2.129:8000/products/list${location.search}`, {
+    fetch(`http://54.174.216.108:8000/products/list${location.search}`, {
       method: 'GET',
     })
       .then(res => res.json())
@@ -27,43 +33,84 @@ const Store = () => {
       });
   }, [location.search]);
 
-  // ** MOCK DATA **
-  // useEffect(() => {
-  //   fetch('/data/ITEM_LIST.json')
-  //     .then(res => res.json())
-  //     .then(result => setItems(result));
-  // }, []);
-
-  const goToPage = btnIndex => {
-    const limit = 8;
-    const offset = btnIndex * limit;
-    const queryString = `?offset=${offset}&limit=${limit}`;
-    navigate(`${queryString}`);
+  const handleURL = name => {
+    if (urlMaterial) {
+      navigate(`?${categoryString}&${materialString}&${name}`);
+    }
+    if (!urlMaterial && urlCategory) {
+      navigate(`?${categoryString}&${name}`);
+    }
+    if (!urlMaterial && !urlCategory) {
+      navigate(`?${name}`);
+    }
   };
 
-  //{location.search ? urlCategory : '전체상품'}
+  const pageLimit = 8;
+
+  const goToPage = btnIndex => {
+    // console.log('btnIndex', btnIndex);
+    const offset = btnIndex * pageLimit;
+    const pageString = `offset=${offset}&limit=${pageLimit}`;
+    handleURL(pageString);
+  };
+
+  const goToMaterial = e => {
+    navigate(`?${categoryString}&material=${e.target.innerHTML}`);
+  };
+
   const sortNewest = () => {
-    location.search
-      ? navigate(`?category=${urlCategory}&sort_method=-the_newest`)
-      : navigate(`?sort_method=-the_newest`);
+    const newestString = 'sort_method=-the_newest';
+    handleURL(newestString);
   };
 
   const sortName = () => {
-    location.search
-      ? navigate(`?category=${urlCategory}&sort_method=name`)
-      : navigate(`?sort_method=name`);
+    const nameString = 'sort_method=name';
+    handleURL(nameString);
   };
 
   const sortHighPrice = () => {
-    location.search
-      ? navigate(`?category=${urlCategory}&sort_method=price`)
-      : navigate(`?sort_method=price`);
+    const highPriceString = 'sort_method=price';
+    handleURL(highPriceString);
   };
 
   const sortLowPrice = () => {
-    location.search
-      ? navigate(`?category=${urlCategory}&sort_method=-price`)
-      : navigate(`?sort_method=-price`);
+    const lowPriceString = 'sort_method=-price';
+    handleURL(lowPriceString);
+  };
+
+  const firstPage = () => {
+    const firstPageString = 'offset=0&limit=8';
+    Number(urlOffset) > 0
+      ? handleURL(firstPageString)
+      : alert('이미 첫번째 페이지 입니다.');
+    handleURL(firstPageString);
+  };
+
+  const previousPage = () => {
+    const calculateOffset = urlOffset - pageLimit;
+    const pageChangerString = `offset=${calculateOffset}&limit=8`;
+    handleURL(pageChangerString);
+    if (Number(urlOffset) <= 0) {
+      firstPage();
+    }
+  };
+
+  const nextPage = calculateBtn => {
+    const calculateOffset = Number(urlOffset) + Number(pageLimit);
+    const pageChangerString = `offset=${calculateOffset}&limit=8`;
+    handleURL(pageChangerString);
+    if (totalCounts - pageLimit < urlOffset) {
+      lastPage(calculateBtn);
+    }
+  };
+
+  const lastPage = calculateBtn => {
+    const calculateLast = (calculateBtn - 1) * pageLimit;
+    const lastPageString = `offset=${calculateLast}&limit=8`;
+    Number(urlOffset) === Number(calculateLast)
+      ? alert('이미 마지막 페이지 입니다.')
+      : handleURL(lastPageString);
+    handleURL(lastPageString);
   };
 
   const changeBigList = () => {
@@ -74,24 +121,9 @@ const Store = () => {
     setListType('small');
   };
 
-  const firstPage = () => {};
-  const previousPage = btnIndex => {};
-  const nextPage = btnIndex => {};
-  const lastPage = () => {};
-
   const getItemData = ItemData => {
     setOpenModal(true);
     setItemData(ItemData);
-  };
-
-  // console.log('store qs', decodeURIComponent(location.search));
-  const params = new URLSearchParams(location.search);
-  const urlCategory = params.get('category');
-
-  const goToMaterial = e => {
-    location.search
-      ? navigate(`?category=${urlCategory}&material=${e.target.innerHTML}`)
-      : navigate(`?sort_method=-price`);
   };
 
   const CATEGORY = {
@@ -168,6 +200,8 @@ const Store = () => {
             })}
           </div>
           <PageList
+            pageLimit={pageLimit}
+            totalCounts={totalCounts}
             goToPage={goToPage}
             firstPage={firstPage}
             previousPage={previousPage}
