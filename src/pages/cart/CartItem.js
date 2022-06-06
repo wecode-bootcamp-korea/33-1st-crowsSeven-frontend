@@ -17,7 +17,7 @@ const CartItem = ({
   }, [checkedList, item]);
 
   const onSubmit = () => {
-    fetch(`http://10.58.1.252:8000/carts/${item.id}`, {
+    fetch(`http://10.58.2.129:8000/carts/${item.id}`, {
       method: 'PATCH',
       headers: {
         Authorization: localStorage.getItem('Authorization'),

@@ -5,16 +5,16 @@ import Store from './pages/store/Store';
 import Cart from './pages/Cart/Cart';
 import Nav from './components/Nav/Nav';
 import Orderpage from './pages/Order/OrderPage';
-import Post from './pages/review/Post';
 import Signup from './pages/Signup/Signup';
 import Login from './pages/Login/Login';
 import StoreModal from './components/storeModal/StoreModal';
-import ReviewPage from './pages/review/ReviewPage';
-import PostForm from './pages/review/PostForm';
 import MyPage from './pages/mypage/MyPage';
 import OrderCheck from './pages/OrderCheck/OrderCheck';
 import DeleteOrder from './pages/DeleteOrder/DeleteOrder';
 import SearchResult from './pages/searchResult/SearchResult';
+import Post from './pages/review/Post';
+import ReviewPage from './pages/review/ReviewPage';
+import PostForm from './pages/review/PostForm';
 
 const Router = () => {
   return (
@@ -26,7 +26,7 @@ const Router = () => {
         <Route path="/store" element={<Store />} />
         <Route path="/storeModal" element={<StoreModal />} />
         <Route path="/productDetail/:id" element={<ProductDetail />} />
-        <Route path="/review_post" element={<Post />} />
+        <Route path="/review_post/:id" element={<Post />} />
         <Route path="/review_page" element={<ReviewPage />} />
         <Route path="/review_form" element={<PostForm />} />
         <Route path="/cart" element={<Cart />} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import './PostForm.scss';
@@ -10,11 +10,47 @@ const PostForm = () => {
   };
 
   const [makeListTransfer, setMakeListTransfer] = useState({
-    subject: '',
+    title: '',
     option: '',
-    content: '',
+    context: '',
     password: '',
   });
+
+  const [selectOption, setSelectOption] = useState([]);
+
+  const { title, option, context, password } = makeListTransfer;
+  const postComment = e => {
+    e.preventDefault();
+    fetch(`http://10.58.1.252:8000/reviews/product/${option}`, {
+      method: 'POST',
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
+      body: JSON.stringify({
+        title: title,
+        context: context,
+        password: password,
+      }),
+    }).then(res => {
+      if (res => res === 'SUCCESS') {
+        navigate('/review_page');
+      } else {
+        alert('잘못된 요청입니다');
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetch('http://10.58.1.252:8000/users/purchasedproduct', {
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
+    })
+      .then(res => res.json())
+      .then(data => {
+        setSelectOption(data.message);
+      });
+  }, []);
 
   const postTransfer = e => {
     setMakeListTransfer({
@@ -28,19 +64,26 @@ const PostForm = () => {
       <header className="slideRight">
         <h1>상품후기</h1>
       </header>
-      <form className="reviewFormContainer">
+      <form className="reviewFormContainer" method="POST">
         <table>
           <thead>
             <tr>
               <th>제목</th>
               <td>
-                <input type="text" name="subject" onChange={postTransfer} />
+                <input type="text" name="title" onChange={postTransfer} />
                 <select
                   className="reviewOption"
                   name="option"
                   onChange={postTransfer}
                 >
                   <option>제품 선택</option>
+                  {selectOption.map(a => {
+                    return (
+                      <option key={a.id} value={a.id}>
+                        {a.name}
+                      </option>
+                    );
+                  })}
                 </select>
               </td>
             </tr>
@@ -48,7 +91,7 @@ const PostForm = () => {
           <tbody>
             <tr>
               <td className="textArea" colSpan="2">
-                <textarea name="content" onChange={postTransfer} />
+                <textarea name="context" onChange={postTransfer} />
               </td>
             </tr>
             <tr>
@@ -70,7 +113,9 @@ const PostForm = () => {
             </button>
           </div>
           <div>
-            <button className="createBtn">등록</button>
+            <button className="createBtn" onClick={postComment}>
+              등록
+            </button>
             <button className="cancleBtn" onClick={goToReviewList}>
               취소
             </button>

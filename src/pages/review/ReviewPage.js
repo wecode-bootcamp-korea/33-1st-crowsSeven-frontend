@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Nav from '../../components/Nav/Nav';
 import TextItem from '../../components/reviews/TextItem';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 import './ReviewPage.scss';
 
@@ -20,18 +20,41 @@ const ReviewPage = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const transferBack = () => {};
+  console.log('text', textList);
+
+  const transferBack = () => {
+    fetch('http://10.58.0.159:8000/products/', {
+      method: 'POST',
+      headers: {
+        Authorization: localStorage.getItem('Authorization'),
+      },
+      body: JSON.stringify(searchTransfer),
+    })
+      .then(res => res.json())
+      .then(res => {
+        if (res => res === 'SUCCESS') {
+          navigate('/review_page');
+        } else {
+          alert('잘못된 요청입니다');
+        }
+      });
+  };
+  const location = useLocation();
 
   useEffect(() => {
-    fetch('/data/relatedProductData.json')
+    fetch('http://10.58.1.252:8000/reviews/whole')
+      // 백 api
+      // fetch('/data/relatedProductData.json')
       .then(res => res.json())
-      .then(productData => setTextList(productData));
-  }, []);
+      .then(productData => setTextList(productData.message));
+  }, [location.pathname]);
 
   const navigate = useNavigate();
   const goToReviewForm = () => {
     navigate('/review_form');
   };
+
+  const token = localStorage.getItem('Authorization');
 
   return (
     <>
@@ -122,9 +145,11 @@ const ReviewPage = () => {
                 찾기
               </button>
             </fieldset>
-            <button className="reviewWrite" onClick={goToReviewForm}>
-              글쓰기
-            </button>
+            {token && (
+              <button className="reviewWrite" onClick={goToReviewForm}>
+                글쓰기
+              </button>
+            )}
           </article>
         </section>
       </div>

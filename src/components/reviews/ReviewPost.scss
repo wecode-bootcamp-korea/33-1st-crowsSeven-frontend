@@ -1,0 +1,14 @@
+.postDateView {
+  display: flex;
+  justify-content: space-between;
+
+  button {
+    background-color: transparent;
+    border: 1px solid lightgray;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #fafafa;
+    }
+  }
+}

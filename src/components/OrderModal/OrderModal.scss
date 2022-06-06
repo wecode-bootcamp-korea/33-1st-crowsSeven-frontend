@@ -2,6 +2,7 @@
   width: 100vw;
   height: 100vh;
   position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 9999;
@@ -9,7 +10,8 @@
 
   .modalContainer {
     text-align: center;
-    position: absolute;
+    position: relative;
+    position: fixed;
     top: 50%;
     left: 50%;
     width: 600px;
@@ -37,7 +39,7 @@
     }
 
     button {
-      width: 120px;
+      width: 160px;
       height: 50px;
       border: none;
       border-radius: 50px;

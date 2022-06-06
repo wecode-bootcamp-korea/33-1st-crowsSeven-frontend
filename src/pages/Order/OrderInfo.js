@@ -52,9 +52,11 @@ const Deposit = () => {
   );
 };
 
-const OrderInfo = ({ orderItemList, shipping, total }) => {
-  const [orderResult, setOrderResult] = useState([]);
+// const orderModal = () => {
+//   <Ordermodal />;
+// };
 
+const OrderInfo = ({ orderItemList, shipping, total }) => {
   const [inputValue, setInputValue] = useState({
     selected_product_ids: '',
     recipient: '',
@@ -73,9 +75,10 @@ const OrderInfo = ({ orderItemList, shipping, total }) => {
     const { name, value } = e.target;
     setInputValue({ ...inputValue, [name]: value });
   };
-
+  const [orderResult, setOrderResult] = useState(false);
   const onSubmit = e => {
     e.preventDefault();
+    // setOrderResult(true);
 
     const isValid =
       inputValue.recipient &&
@@ -88,7 +91,7 @@ const OrderInfo = ({ orderItemList, shipping, total }) => {
     const orderItemIds = orderItemList.map(orderItem => orderItem.id);
 
     if (isValid) {
-      fetch('http://10.58.1.252:8000/orders/', {
+      fetch('http://10.58.2.129:8000/orders/', {
         method: 'POST',
         headers: {
           Authorization: localStorage.getItem('Authorization'),
@@ -99,17 +102,20 @@ const OrderInfo = ({ orderItemList, shipping, total }) => {
           shopping_fee: Number(shipping),
           selected_product_ids: orderItemIds,
         }),
-      })
-        .then(res => {
-          if (res.status === 200) {
-            return res.json();
-          } else if (res.status === 400) {
-            alert('주문할 상품이 없습니다.');
-          } else {
-            alert('주문을 실패했습니다. 다시 요청해주세요');
-          }
-        })
-        .then(res => setOrderResult(res));
+      }).then(res => {
+        if (res.status === 200) {
+          // return res.json();
+          alert('주문완료.');
+          // const result = res.result;
+          // {date: '22.05.22', orderNumber: 23324324}
+          setOrderResult(true);
+        } else if (res.status === 400) {
+          alert('주문할 상품이 없습니다.');
+        } else {
+          alert('주문을 실패했습니다. 다시 요청해주세요');
+        }
+      });
+      // .then(res => setOrderResult(res));
     } else {
       window.alert('주문서를 작성해 주세요.');
     }
@@ -251,7 +257,7 @@ const OrderInfo = ({ orderItemList, shipping, total }) => {
           </div>
         </div>
       </form>
-      {orderResult.length > 0 && <Ordermodal orderResult={orderResult} />}
+      {orderResult && <Ordermodal />}
     </div>
   );
 };

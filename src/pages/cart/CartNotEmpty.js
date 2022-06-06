@@ -53,11 +53,11 @@ const CartNotEmpty = ({
   const onSelectDelete = () => {
     const checkedIds = checkedList.map(checkedItem => checkedItem.id);
 
-    fetch(`http://10.58.1.252:8000/carts/${checkedIds}`, {
+    fetch(`http://10.58.2.129:8000/carts/${checkedIds}`, {
       method: 'DELETE',
     })
       .then(res => {
-        if (res.status === 200) {
+        if (res.status === 201) {
           fetchCartList();
         }
       })

@@ -2,13 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './OrderModal.scss';
 
-const result = { date: '2022-06-03', orderNumber: '2216307 - 134335' };
+const result = { date: '2022-06-03', orderNumber: '970221 - 991104' };
 
 const Ordermodal = ({ orderResult }) => {
   const navigate = useNavigate();
 
   const goToMain = () => {
-    navigate('/orderCheck');
+    navigate('/');
   };
 
   return (

@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const [checkedList, setCheckedLists] = useState([]);
   const [inputValue, setInputValue] = useState({
     id: '',
@@ -48,7 +48,7 @@ const Signup = () => {
   };
 
   const goToMain = () => {
-    fetch('http://10.58.1.252:8000/users/signup', {
+    fetch('http://10.58.2.129:8000/users/signup', {
       method: 'POST',
       body: JSON.stringify({
         username: id,
@@ -60,14 +60,18 @@ const Signup = () => {
         phone_number: '010' + phone,
         optional_agreement: checked,
       }),
-    }).then(response => {
-      if (response.ok) {
-        response.json();
-        navigate('../');
-      } else {
-        alert('입력창을 확인해주세요');
-      }
-    });
+    })
+      .then(response => {
+        if (response.ok) {
+          response.json();
+        } else {
+          alert('입력창을 확인해 주세요');
+        }
+      })
+
+      .then(result => {
+        navigate('../login');
+      });
   };
 
   useEffect(() => {

@@ -8,7 +8,7 @@ const OrderPage = () => {
   const [orderItemList, setOrderItem] = useState([]);
 
   const fetchCartList = () => {
-    fetch('http://10.58.1.252:8000/carts/', {
+    fetch('http://10.58.2.129:8000/carts/', {
       method: 'GET',
       headers: {
         Authorization: localStorage.getItem('Authorization'),

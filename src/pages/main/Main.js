@@ -29,21 +29,19 @@ const Main = () => {
 
   useEffect(() => {
     const scroll = scrollRef.current;
-    scroll.addEventListener('scroll', throttleFunc, false);
+    scroll.addEventListener('scroll', throttleScroll, false);
 
     return () => {
-      scroll.removeEventListener('scroll', throttleFunc, false);
+      scroll.removeEventListener('scroll', throttleScroll, false);
     };
   });
 
-  const throttleFunc = e => {
+  const throttleScroll = e => {
     if (!throttle) {
       const { scrollTop, scrollHeight } = e.target;
       let height = Math.floor((scrollTop / scrollHeight) * 100);
-      if (height > 17 && height < 60) {
-        setScrollTop(height);
-        setThrottle(true);
-      }
+      setScrollTop(height);
+      setThrottle(true);
       setTimeout(() => {
         setThrottle(false);
       }, 300);

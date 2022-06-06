@@ -11,7 +11,6 @@ import './Nav.scss';
 const Nav = () => {
   const [isToggle, setToggle] = useState(true);
   const [isSearch, setIsSearch] = useState(false);
-  // const [listName, setListName] = useState();
 
   const navigate = useNavigate();
 
@@ -35,6 +34,9 @@ const Nav = () => {
 
   const handleMoveCart = () => {
     navigate('/cart');
+  };
+  const moveToreview = () => {
+    navigate('/review');
   };
 
   return (
@@ -71,7 +73,9 @@ const Nav = () => {
             COMMUNITY
             <div className="navTextListInfo">
               {COMMUNITY.map(({ id, listName }) => (
-                <li key={id}>{listName}</li>
+                <li key={id} onClick={moveToreview}>
+                  {listName}
+                </li>
               ))}
               <div className="navTextListIcon">
                 <BsInstagram className="insta" />
