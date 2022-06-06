@@ -18,11 +18,11 @@ const Cart = () => {
     })
       .then(res => res.json())
       .then(res => {
+        console.log('res', res);
         setCartList(res.results);
       })
       .catch(e => {});
   };
-
   useEffect(() => {
     fetchCartList();
   }, []);
